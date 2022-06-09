@@ -38,6 +38,7 @@ class StoryPageView extends StatefulWidget {
     this.backgroundColor = Colors.black,
     this.indicatorAnimationController,
     this.onPageChanged,
+    this.indicatorDutarionForPage
   }) : super(key: key);
 
   /// Function to build story content
@@ -62,6 +63,8 @@ class StoryPageView extends StatefulWidget {
 
   /// duration of [Indicators]
   final Duration indicatorDuration;
+
+  final Duration Function(int index)? indicatorDutarionForPage;
 
   /// Called when the very last story is finished.
   ///
@@ -143,7 +146,7 @@ class _StoryPageViewState extends State<StoryPageView> {
                   onPageLimitReached: widget.onPageLimitReached,
                   itemBuilder: widget.itemBuilder,
                   gestureItemBuilder: widget.gestureItemBuilder,
-                  indicatorDuration: widget.indicatorDuration,
+                  indicatorDuration: widget.indicatorDutarionForPage?.call(index) ?? widget.indicatorDuration,
                   indicatorPadding: widget.indicatorPadding,
                   indicatorAnimationController:
                       widget.indicatorAnimationController,
