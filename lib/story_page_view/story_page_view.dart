@@ -38,7 +38,7 @@ class StoryPageView extends StatefulWidget {
     this.backgroundColor = Colors.black,
     this.indicatorAnimationController,
     this.onPageChanged,
-    this.indicatorDutarionForPage
+    this.getIndicatorDuration
   }) : super(key: key);
 
   /// Function to build story content
@@ -64,7 +64,7 @@ class StoryPageView extends StatefulWidget {
   /// duration of [Indicators]
   final Duration indicatorDuration;
 
-  final Duration Function(int pageIndex, int storyIndex)? indicatorDutarionForPage;
+  final Duration Function(int pageIndex, int storyIndex)? getIndicatorDuration;
 
   /// Called when the very last story is finished.
   ///
@@ -146,7 +146,8 @@ class _StoryPageViewState extends State<StoryPageView> {
                   onPageLimitReached: widget.onPageLimitReached,
                   itemBuilder: widget.itemBuilder,
                   gestureItemBuilder: widget.gestureItemBuilder,
-                  indicatorDuration: widget.indicatorDutarionForPage?.call(currentPageValue.toInt(), index) ?? widget.indicatorDuration,
+                  indicatorDuration: widget.indicatorDuration,
+                  getIndicatorDuration: widget.getIndicatorDuration,
                   indicatorPadding: widget.indicatorPadding,
                   indicatorAnimationController:
                       widget.indicatorAnimationController,
@@ -181,7 +182,8 @@ class _StoryPageFrame extends StatefulWidget {
     required this.gestureItemBuilder,
     required this.indicatorDuration,
     required this.indicatorPadding,
-    required this.indicatorAnimationController,
+    required this.indicatorAnimationController, 
+    required this.getIndicatorDuration,
   }) : super(key: key);
   final int storyLength;
   final int initialStoryIndex;
@@ -191,6 +193,7 @@ class _StoryPageFrame extends StatefulWidget {
   final _StoryItemBuilder itemBuilder;
   final _StoryItemBuilder? gestureItemBuilder;
   final Duration indicatorDuration;
+  final Duration Function(int pageIndex, int storyIndex)? getIndicatorDuration;
   final EdgeInsetsGeometry indicatorPadding;
   final ValueNotifier<IndicatorAnimationCommand>? indicatorAnimationController;
 
@@ -206,6 +209,7 @@ class _StoryPageFrame extends StatefulWidget {
     required _StoryItemBuilder itemBuilder,
     _StoryItemBuilder? gestureItemBuilder,
     required Duration indicatorDuration,
+    required Duration Function(int pageIndex, int storyIndex)? getIndicatorDuration,
     required EdgeInsetsGeometry indicatorPadding,
     required ValueNotifier<IndicatorAnimationCommand>?
         indicatorAnimationController,
@@ -247,6 +251,7 @@ class _StoryPageFrame extends StatefulWidget {
         indicatorDuration: indicatorDuration,
         indicatorPadding: indicatorPadding,
         indicatorAnimationController: indicatorAnimationController,
+        getIndicatorDuration: getIndicatorDuration,
       ),
     );
   }
@@ -282,7 +287,7 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
     };
     animationController = AnimationController(
       vsync: this,
-      duration: widget.indicatorDuration,
+      duration: widget.getIndicatorDuration != null ? widget.getIndicatorDuration!(widget.pageIndex, context.watch<StoryStackController>().value,) : widget.indicatorDuration,
     )..addStatusListener(
         (status) {
           if (status == AnimationStatus.completed) {
