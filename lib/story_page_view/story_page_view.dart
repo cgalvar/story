@@ -264,7 +264,7 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
     with
         AutomaticKeepAliveClientMixin<_StoryPageFrame>,
         SingleTickerProviderStateMixin {
-  late AnimationController animationController;
+  AnimationController? animationController;
 
   late VoidCallback listener;
 
@@ -276,26 +276,16 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
       if (widget.isCurrentPage) {
         switch (widget.indicatorAnimationController?.value) {
           case IndicatorAnimationCommand.pause:
-            animationController.stop();
+            animationController?.stop();
             break;
           case IndicatorAnimationCommand.resume:
           default:
-            animationController.forward();
+            animationController?.forward();
             break;
         }
       }
     };
-    animationController = AnimationController(
-      vsync: this,
-      duration: widget.getIndicatorDuration != null ? widget.getIndicatorDuration!(widget.pageIndex, context.watch<StoryStackController>().value,) : widget.indicatorDuration,
-    )..addStatusListener(
-        (status) {
-          if (status == AnimationStatus.completed) {
-            context.read<StoryStackController>().increment(
-                restartAnimation: () => animationController.forward(from: 0));
-          }
-        },
-      );
+    
     widget.indicatorAnimationController?.addListener(listener);
   }
 
@@ -307,6 +297,19 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
 
   @override
   Widget build(BuildContext context) {
+
+    animationController ??= AnimationController(
+      vsync: this,
+      duration: widget.getIndicatorDuration != null ? widget.getIndicatorDuration!(widget.pageIndex, context.watch<StoryStackController>().value,) : widget.indicatorDuration,
+    )..addStatusListener(
+        (status) {
+          if (status == AnimationStatus.completed) {
+            context.read<StoryStackController>().increment(
+                restartAnimation: () => animationController?.forward(from: 0));
+          }
+        },
+      );
+
     super.build(context);
     return Stack(
       fit: StackFit.loose,
