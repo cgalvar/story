@@ -64,7 +64,7 @@ class StoryPageView extends StatefulWidget {
   /// duration of [Indicators]
   final Duration indicatorDuration;
 
-  final Duration Function(int index)? indicatorDutarionForPage;
+  final Duration Function(int pageIndex, int storyIndex)? indicatorDutarionForPage;
 
   /// Called when the very last story is finished.
   ///
@@ -91,7 +91,7 @@ class StoryPageView extends StatefulWidget {
 class _StoryPageViewState extends State<StoryPageView> {
   PageController? pageController;
 
-  var currentPageValue;
+  double currentPageValue = 0;
 
   @override
   void initState() {
@@ -102,7 +102,7 @@ class _StoryPageViewState extends State<StoryPageView> {
 
     pageController!.addListener(() {
       setState(() {
-        currentPageValue = pageController!.page;
+        currentPageValue = pageController!.page ?? 0;
       });
     });
   }
@@ -146,7 +146,7 @@ class _StoryPageViewState extends State<StoryPageView> {
                   onPageLimitReached: widget.onPageLimitReached,
                   itemBuilder: widget.itemBuilder,
                   gestureItemBuilder: widget.gestureItemBuilder,
-                  indicatorDuration: widget.indicatorDutarionForPage?.call(index) ?? widget.indicatorDuration,
+                  indicatorDuration: widget.indicatorDutarionForPage?.call(currentPageValue.toInt(), index) ?? widget.indicatorDuration,
                   indicatorPadding: widget.indicatorPadding,
                   indicatorAnimationController:
                       widget.indicatorAnimationController,
