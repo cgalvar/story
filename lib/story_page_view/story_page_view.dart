@@ -351,6 +351,13 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
           padding: widget.indicatorPadding,
         ),
         Gestures(
+          onDecrement: () {
+            var index = Provider.of<StoryStackController>(context, listen: false).value;
+            if (index > 1) {
+              index = index - 1;
+            }
+            animationController?.duration = widget.getIndicatorDuration != null ? widget.getIndicatorDuration!(widget.pageIndex, index,) : widget.indicatorDuration;
+          },
           animationController: animationController,
         ),
         Positioned.fill(
