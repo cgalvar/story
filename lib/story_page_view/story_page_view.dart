@@ -305,7 +305,11 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
         (status) {
           if (status == AnimationStatus.completed) {
             context.read<StoryStackController>().increment(
-                restartAnimation: () => animationController?.forward(from: 0));
+                restartAnimation: () {
+                  animationController?.duration = widget.getIndicatorDuration != null ? widget.getIndicatorDuration!(widget.pageIndex, Provider.of<StoryStackController>(context, listen: false).value,) : widget.indicatorDuration;
+                  animationController?.forward(from: 0);
+                }
+            );
           }
         },
       );
