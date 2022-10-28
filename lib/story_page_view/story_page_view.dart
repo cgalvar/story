@@ -38,7 +38,8 @@ class StoryPageView extends StatefulWidget {
     this.backgroundColor = Colors.black,
     this.indicatorAnimationController,
     this.onPageChanged,
-    this.getIndicatorDuration
+    this.getIndicatorDuration,
+    this.indicatorColor = Colors.white,
   }) : super(key: key);
 
   /// Function to build story content
@@ -83,6 +84,8 @@ class StoryPageView extends StatefulWidget {
   /// A stream with [IndicatorAnimationCommand] to force pause or continue inticator animation
   /// Useful when you need to show any popup over the story
   final ValueNotifier<IndicatorAnimationCommand>? indicatorAnimationController;
+
+  final Color indicatorColor;
 
   @override
   _StoryPageViewState createState() => _StoryPageViewState();
@@ -151,6 +154,7 @@ class _StoryPageViewState extends State<StoryPageView> {
                   indicatorPadding: widget.indicatorPadding,
                   indicatorAnimationController:
                       widget.indicatorAnimationController,
+                  indicatorColor: widget.indicatorColor
                 ),
                 if (isPaging && !isLeaving)
                   Positioned.fill(
@@ -184,6 +188,7 @@ class _StoryPageFrame extends StatefulWidget {
     required this.indicatorPadding,
     required this.indicatorAnimationController, 
     required this.getIndicatorDuration,
+    required this.indicatorColor,
   }) : super(key: key);
   final int storyLength;
   final int initialStoryIndex;
@@ -195,6 +200,7 @@ class _StoryPageFrame extends StatefulWidget {
   final Duration indicatorDuration;
   final Duration Function(int pageIndex, int storyIndex)? getIndicatorDuration;
   final EdgeInsetsGeometry indicatorPadding;
+  final Color indicatorColor;
   final ValueNotifier<IndicatorAnimationCommand>? indicatorAnimationController;
 
   static Widget wrapped({
@@ -213,6 +219,7 @@ class _StoryPageFrame extends StatefulWidget {
     required EdgeInsetsGeometry indicatorPadding,
     required ValueNotifier<IndicatorAnimationCommand>?
         indicatorAnimationController,
+    required Color indicatorColor,
   }) {
     return MultiProvider(
       providers: [
@@ -252,6 +259,7 @@ class _StoryPageFrame extends StatefulWidget {
         indicatorPadding: indicatorPadding,
         indicatorAnimationController: indicatorAnimationController,
         getIndicatorDuration: getIndicatorDuration,
+        indicatorColor: indicatorColor,
       ),
     );
   }
@@ -349,6 +357,7 @@ class _StoryPageFrameState extends State<_StoryPageFrame>
           isCurrentPage: widget.isCurrentPage,
           isPaging: widget.isPaging,
           padding: widget.indicatorPadding,
+          indicatorColor: widget.indicatorColor,
         ),
         Gestures(
           onDecrement: () {
